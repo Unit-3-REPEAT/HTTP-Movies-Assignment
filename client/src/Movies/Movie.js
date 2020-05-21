@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import MovieCard from "./MovieCard";
-import {useHistory} from 'react-router-dom';
 
-function Movie({ addToSavedList }) {
-  const [movie, setMovie] = useState(null);
-  const {push} = useHistory();
-  // console.log(push);
+
+
+function Movie(props) {
+  console.log(`props inside Movie.js`, props);
+
+  const history = useHistory();
+  // console.log(history);
   const params = useParams();
+  // console.log(params);
+  
+  const [movie, setMovie] = useState(null);
+
+  
   
 
-  const fetchMovie = (id) => {
+  const fetchMovie = (id) => { 
     axios
       .get(`http://localhost:5000/api/movies/${id}`)
       .then((res) => setMovie(res.data))
@@ -20,14 +27,18 @@ function Movie({ addToSavedList }) {
 
 
   //Route to UpdatedForm
+  // const RouteToUpdateMovieForm = () => {
+  //   history.push(`/update-movie/${movie.id}`)
+  // }
+
   const RouteToUpdateMovieForm = (id) => {
-    push(`/update-movie/${id}`)
+    history.push(`/update-movie/${id}`)
   }
 
 
 
   const saveMovie = () => {
-    addToSavedList(movie);
+    props.addToSavedList(movie);
   };
 
   useEffect(() => {
@@ -37,6 +48,22 @@ function Movie({ addToSavedList }) {
   if (!movie) {
     return <div>Loading movie information...</div>;
   }
+
+//  Delete Movie
+  const DeleteMovie = (e) => {
+    e.preventDefault();
+    axios
+    .delete(`http://localhost:5000/api/movies/${params.id}`)
+    .then(response => {
+     console.log(`->`, response) 
+     props.getMovieList(); // Tried to do this a different way but did not work 
+         
+     history.push('/')
+    })
+    .catch(error => console.log(`There was an error with delete request`, error))
+  }
+
+ 
 
   return (
     <>
@@ -48,7 +75,9 @@ function Movie({ addToSavedList }) {
             Save         
           </div>   
     
-          <button onClick={() => RouteToUpdateMovieForm(movie.id)}>Update Movie</button>   
+          <button onClick={() => RouteToUpdateMovieForm(movie.id)}>Update Movie</button> 
+          {/* // When to use () => and when to not   */}
+          <button onClick={DeleteMovie}>Delete Movie</button> 
     </section>
     </>
   );  
