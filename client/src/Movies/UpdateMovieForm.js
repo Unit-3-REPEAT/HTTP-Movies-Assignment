@@ -45,7 +45,7 @@ const UpdateMovieForm = (props) => {
         .put(`http://localhost:5000/api/movies/${params.id}`, movieValue)
         .then (response => {
             // console.log(response);            
-            /// hmmm why? props.setMovieValue(response) didnt work <---------------        
+            // we call getMovieList() to rerender the page after the put request     
             props.getMovieList(); 
             //this routes user back to base URL
             history.push('/')

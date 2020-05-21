@@ -11,7 +11,7 @@ function Movie(props) {
   const history = useHistory();
   // console.log(history);
   const params = useParams();
-  // console.log(params);
+  console.log(params);
   
   const [movie, setMovie] = useState(null);
 
